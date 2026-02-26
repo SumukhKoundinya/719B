@@ -216,8 +216,9 @@ void Autonomous::purePursuitTest() {
         pros::delay(20);
     }*/
     moveIntake(127);
-    drivePID.moveDistance(24, 0.9);
+    drivePID.moveDistance(24, 0.85);
     rotPID.rotateTo(90);
+    drivePID.moveDistance(12, 1);
 }
 
 void Autonomous::test() {
