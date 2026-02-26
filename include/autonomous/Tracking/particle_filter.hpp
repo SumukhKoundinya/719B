@@ -32,7 +32,7 @@ public:
 
     void init(double startX, double startY, double startTheta);
 
-    void update(double deltaS, double deltaTheta);
+    void update(double deltaS, double deltaTheta, double horizReading, double vertReading);
     
     double getX() const;
     double getY() const;

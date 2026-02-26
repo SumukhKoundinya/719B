@@ -15,9 +15,13 @@ double prevTheta = 0;
 void pfTask(void*) {
     while (true) {
         odom.update();
+        double horizReading = horizDist.get() / 25.4;
+        double vertReading = vertDist.get() / 25.4;
         pf.update(
             odom.getDeltaS(),
-            odom.getDeltaTheta()
+            odom.getDeltaTheta(),
+            horizReading,
+            vertReading
         );
         pros::delay(20);
     }
@@ -45,8 +49,8 @@ void Autonomous::initFunc() {
     pistonB.set_value(1);
 
     odom.init();
-    pf.init(-62.434, -14.693, 0);
-    odom.reset(-62.434, -14.693, 0);
+    pf.init(0, 0, 0);
+    odom.reset(0, 0, 0);
 
     path = loadPath(nullptr);
     controller = PurePursuit(path, 6.0, 13.5);
@@ -199,14 +203,22 @@ void Autonomous::purePursuitTest() {
     }
     left_mg.moveMotors(0);
     right_mg.moveMotors(0);*/
-    moveToPoint(5, 24);
+    /*moveToPoint(5, 24);
     rotPID.rotateTo(60);
-    moveToPoint(0, 10);
+    moveToPoint(0, 10);*/
     //drivePID.moveDistance(15, 0.9);
 
     //moveToPointCurve(15, 24);
+    /*while(true) {
+        master.print(0, 0, "X: %.2f", pf.getY());
+        master.print(1, 0, "Y: %.2f", pf.getX());
+        master.print(2, 0, "T: %.2f", imu.get_rotation());
+        pros::delay(20);
+    }*/
+    moveIntake(127);
+    drivePID.moveDistance(24, 0.9);
+    rotPID.rotateTo(90);
 }
-
 
 void Autonomous::test() {
     uint32_t start = pros::millis();

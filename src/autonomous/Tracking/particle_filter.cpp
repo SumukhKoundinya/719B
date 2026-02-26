@@ -7,7 +7,7 @@ ParticleFilter::ParticleFilter(int numParticles) {
     N = numParticles;
     sigmaMotion = 0.1;
     sigmaTurn = 0.005;
-    sigmaSensor = 0.2;
+    sigmaSensor = 3.0; // old 0.2
 }
 
 double ParticleFilter::gaussian(double mean, double stddev) {
@@ -30,8 +30,14 @@ void ParticleFilter::init(double startX, double startY, double startTheta) {
     estTheta = startTheta;
 }
 
-void ParticleFilter::update(double deltaS, double deltaTheta) {
+void ParticleFilter::update(double deltaS, double deltaTheta, double horizReading, double vertReading) {
+    /*prediction(deltaS, deltaTheta);
+    computeEstimate();*/
+
     prediction(deltaS, deltaTheta);
+    measurement(horizReading, vertReading);
+    normalizeWeights();
+    resample();
     computeEstimate();
 }
 
@@ -63,6 +69,12 @@ void ParticleFilter::measurement(double horizReading, double vertReading) {
 void ParticleFilter::normalizeWeights() {
     double sumW = 0;
     for (auto &p : particles) sumW += p.weight;
+    
+    if (sumW < 1e-10) {
+        for (auto &p : particles) p.weight = 1.0 / N;
+        return;
+    }
+    
     for (auto &p : particles) p.weight /= sumW;
 }
 
@@ -88,15 +100,18 @@ void ParticleFilter::resample() {
 }
 
 void ParticleFilter::computeEstimate() {
-    estX = 0;
-    estY = 0;
-    estTheta = 0;
+    double newX = 0, newY = 0, newTheta = 0;
 
     for (auto &p : particles) {
-        estX += p.x * p.weight;
-        estY += p.y * p.weight;
-        estTheta += p.theta * p.weight;
+        newX += p.x * p.weight;
+        newY += p.y * p.weight;
+        newTheta += p.theta * p.weight;
     }
+
+    double alpha = 0.18; // 0 = never update, 1 = no smoothing
+    estX = alpha * newX + (1 - alpha) * estX;
+    estY = alpha * newY + (1 - alpha) * estY;
+    estTheta = alpha * newTheta + (1 - alpha) * estTheta;
 }
 
 double ParticleFilter::getX() const { return estX; }
