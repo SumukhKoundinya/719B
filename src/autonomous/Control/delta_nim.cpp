@@ -28,31 +28,24 @@ namespace DeltaNim {
 
     std::pair<int32_t, int32_t> optimalMove(const HeapVector& heaps) {
         int32_t support = 0;
-        for (int32_t h: heaps) if (h > 0) support++;
-
-        if (support <= SPARSE_CUTOFF) {
-            return sparseOptimalMove(heaps);
-        }
-        return densePairingMove(heaps);
-    }
-
-    int32_t visionGoalLoad(int goal_idx) {
-        static const int32_t right_alliance[4] = {3, 15, 0, 0};
-        return right_alliance[goal_idx];
+        for (int32_t h : heaps) if (h > 0) support++;
+        return (support <= SPARSE_CUTOFF) ? sparseOptimalMove(heaps) : densePairingMove(heaps);
     }
 
     std::pair<double, double> getGoalPosition(int heap_idx) {
-        const std::vector<std::pair<double, double>> GOALS = {
-            {0,60},  // Long Goal Red
-            {80,10}, // Long Goal Blue
-            {52,30},  // Center Upper
-            {-24,50}   // Center Lower
+        const std::vector<std::pair<double, double>> PUSHBACK = {
+            {-24, 50},  // 0: Loader Red
+            {100, 12},  // 1: Loader Blue
+            {52, 30},   // 2: Loader Center  
+            {20, 12}    // 3: Long Goal Red
         };
-        return GOALS[heap_idx % GOALS.size()];
+        return PUSHBACK[heap_idx % 4];
     }
 
-    HeapVector fieldToHeaps(double robot_x, double robot_y, double robot_theta) {
+    HeapVector fieldToHeaps(double robot_x, double robot_y, double robot_theta,
+                          double enemy_x, double enemy_y, bool enemy_blocked) {
         HeapVector heaps(4, 0);
+        static const int32_t loads[4] = {15, 12, 8, 10};  // Push Back loads
 
         for (int i = 0; i < 4; ++i) {
             auto [gx, gy] = getGoalPosition(i);
@@ -61,8 +54,23 @@ namespace DeltaNim {
             angle = fmod(angle + 3*M_PI, 2*M_PI) - M_PI;
             
             if (dist < 60.0 && fabs(angle) < M_PI/4.0) {
-                heaps[i] = visionGoalLoad(i);
+                heaps[i] = loads[i];
             }
+        }
+
+        // Enemy blocks nearest goal
+        if (enemy_blocked) {
+            double min_dist = INFINITY;
+            int blocked = -1;
+            for (int i = 0; i < 4; ++i) {
+                auto [gx, gy] = getGoalPosition(i);
+                double dist = hypot(enemy_x - gx, enemy_y - gy);
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    blocked = i;
+                }
+            }
+            if (blocked >= 0) heaps[blocked] = 0;
         }
         return heaps;
     }

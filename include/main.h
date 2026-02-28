@@ -77,8 +77,10 @@
 #define intake1MotorPort 9
 #define intake2MotorPort -10
 
-#define vertDistPort 17
-#define horizDistPort 15
+#define vertFrontDistPort 17
+#define horizRightDistPort 19
+#define horizLeftDistPort 15
+#define vertBackDistPort 12
 
 #define PISTON_A_PORT 'C'
 #define PISTON_B_PORT 'B'
@@ -95,8 +97,8 @@
 #define tcksPerRev 360.0
 #define distancePerTicksOdom ((M_PI * odomPodWheelDiam) / ticksPerRev)
 
-#define kPL 1.68
-#define kIL 0.0002
+#define kPL 1.65
+#define kIL 0.5
 #define kDL 1.5
 
 #define kPR 5.0

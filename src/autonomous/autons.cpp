@@ -15,14 +15,16 @@ double prevTheta = 0;
 void pfTask(void*) {
     while (true) {
         odom.update();
-        double horizReading = horizDist.get() / 25.4;
-        double vertReading = vertDist.get() / 25.4;
+
         pf.update(
             odom.getDeltaS(),
             odom.getDeltaTheta(),
-            horizReading,
-            vertReading
+            odom.getFrontDist(),
+            odom.getBackDist(),
+            odom.getLeftDist(),
+            odom.getRightDist()
         );
+
         pros::delay(20);
     }
 }
@@ -172,7 +174,7 @@ void moveToPoint(double targetX, double targetY) {
     if (targetDistance < 1.0) return;
 
     rotPID.rotateTo(targetTheta);
-    drivePID.moveDistance(targetDistance, 0.9);
+    drivePID.moveDistance(targetDistance, 1);
 }
 
 void moveToPointOrientation(int xInches, int yInches, double finalOrientation) {
@@ -192,6 +194,36 @@ void intakeTwiceTask(void*) { // idle death gamble
     pros::delay(400);
     pistonB.set_value(0);
     moveIntake(127);
+}
+
+void smartAuton() {
+    uint32_t start_time = pros::millis();
+    
+    while (pros::millis() - start_time < 15000) {  // 15s auton
+        double x, y, theta = pf.getPose();  // YOUR ODOM FUNCTION
+        
+        // SIMULATE ENEMY BLOCK (change per trial)
+        bool loader_blue_blocked = true;  // Set TRUE for test
+        double ex = 95, ey = 15;           // Loader Blue position
+        
+        if (pros::millis() - start_time < DeltaNim::PRESET_TIME) {
+            // FIRST 3s: YOUR PRESET PATHS
+            if (x < -10) moveToPoint(12, 30);  // Loader Red
+            else moveToPoint(-24, 12);          // Loader Blue (might be blocked)
+        } else {
+            // 3s+: Δ-NIM SMART RECOVERY
+            auto heaps = DeltaNim::fieldToHeaps(x, y, theta, ex, ey, loader_blue_blocked);
+            auto [target_goal, remove_amount] = DeltaNim::optimalMove(heaps);
+            
+            if (target_goal >= 0) {
+                auto [gx, gy] = DeltaNim::getGoalPosition(target_goal);
+                moveToPoint(gx, gy);  // YOUR PID
+                pros::lcd::set_text(0, "DNIM: Goal " + std::to_string(target_goal));
+            }
+        }
+        pros::delay(5);  // 200Hz
+    }
+    moveToPoint(0, 0);  // Return to safe position
 }
 
 void Autonomous::purePursuitTest() {
@@ -215,48 +247,16 @@ void Autonomous::purePursuitTest() {
         master.print(2, 0, "T: %.2f", imu.get_rotation());
         pros::delay(20);
     }*/
-    moveIntake(127);
+    /*moveIntake(127);
     drivePID.moveDistance(24, 0.85);
     rotPID.rotateTo(90);
-    drivePID.moveDistance(12, 1);
+    drivePID.moveDistance(12, 1);*/
+    //smartAuton();
+    moveToPoint(12, 24);
 }
 
 void Autonomous::test() {
-    uint32_t start = pros::millis();
-
-    while (pros::millis() - start < 15000) {
-        double robot_x = odom.getX();
-        double robot_y = odom.getY();
-        double robot_theta = odom.getHeadingRad();
-
-        auto heaps = DeltaNim::fieldToHeaps(robot_x, robot_y, robot_theta);
-        auto [target_goal, reduce_by] = DeltaNim::optimalMove(heaps);
-
-        if (target_goal >= 0) {
-            auto [gx, gy] = DeltaNim::getGoalPosition(target_goal);
-
-            double target_angle = atan2(gy - robot_y, gx - robot_x);
-            double angle_error = target_angle - robot_theta;
-            angle_error = fmod(angle_error + 3*M_PI, 2*M_PI) - M_PI;
-
-            rotPID.rotateTo(angle_error * 180.0 / M_PI);
-
-            double dist_to_goal = hypot(gx - robot_x, gy - robot_y);
-            drivePID.moveDistance(dist_to_goal, 1.0);
-
-                    pros::lcd::print(0, "Goal %d: %.1f\"", target_goal, dist_to_goal);
-        }
-        else {
-            // P-position: PARK for AWP bonus
-            drivePID.moveDistance(12, 0.5);
-            pros::lcd::print(0, "P-POSITION: PARK");
-        }
-
-        pros::delay(100);
-    }
-
-    left_mg.moveMotorsVelocity(0);
-    right_mg.moveMotorsVelocity(0);
+    drivePID.moveDistance(24, 1);
 }
 
 void Autonomous::timeCellMoonPalace() {
@@ -264,7 +264,25 @@ void Autonomous::timeCellMoonPalace() {
 }
 
 void Autonomous::selfEmbodimentOfPerfection() {
-    
+    descore.set_value(1);
+    //drivePID.moveDistance(12, 0.9);
+    //drivePID.moveDistance(8, 0.9); 
+    moveIntake(127);
+    drivePID.moveDistance(15, 1);
+    rotPID.rotateTo(15);
+    drivePID.moveDistance(19, 0.8);
+    pros::delay(500);
+    rotPID.rotateTo(105);
+    moveIntake(0);
+    drivePID.moveDistance(23, 1);
+    rotPID.rotateTo(52.5);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(-6, 1);
+    pistonB.set_value(0);
+    moveIntake(127);
+    pros::delay(1500);
+    pistonB.set_value(1);
+    drivePID.moveDistance(25, 1);
 }
 
 void Autonomous::testGamble() {
@@ -307,26 +325,25 @@ void Autonomous::leftSideAutonControl() {
 }
 
 void Autonomous::rightSideAutonControl() {
-    descore.set_value(1);
+    //drivePID.moveDistance(12, 0.9);
+    //drivePID.moveDistance(8, 0.9); 
     moveIntake(127);
-    moveToPoint(40.815, -7.203);
+    drivePID.moveDistance(15, 1);
+    rotPID.rotateTo(14);
+    drivePID.moveDistance(19, 0.72);
     pros::delay(500);
+    rotPID.rotateTo(105);
     moveIntake(0);
-    moveToPointOrientation(16.956, -32.562, 180);
+    drivePID.moveDistance(21.5, 0.87);
+    rotPID.rotateTo(51.5);
     matchLoader2.set_value(1);
-    moveIntake(127);
-    moveToPoint(-4.202, 32.111);
-    pros::delay(1000);
-    moveIntake(0);
-    moveToPointOrientation(40.158, -32.616, 180);
+    drivePID.moveDistance(-6.5, 1);
     pistonB.set_value(0);
+    moveIntake(-127);
+    pros::delay(300);
     moveIntake(127);
-    pros::delay(1500);
-    moveIntake(0);
-    matchLoader2.set_value(0);
-    moveToPoint(29.819, -25.555);
-    moveToPointOrientation(41.166, -24.294, 180);
-    descore.set_value(0);
-    moveToPoint(41.166, 24.294);
+
+
+    
 }
 

@@ -11,7 +11,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    auton.purePursuitTest();
+    auton.rightSideAutonControl();
 }
 
 void opcontrol() {
