@@ -11,7 +11,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    auton.rightSideAutonControl();
+    //auton.rightSideAutonControl();
+    //auton.rightSideAutonControl();
+    auton.timeCellMoonPalace();
 }
 
 void opcontrol() {
