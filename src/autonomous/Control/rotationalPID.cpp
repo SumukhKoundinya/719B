@@ -31,6 +31,7 @@ void RotationalPID::rotateTo(double targetAngle) {
 
         uint32_t now = pros::millis();
         double dt = (now - prevTime) / 1000.0;
+        
         prevTime = now;
         if (dt <= 0.001) dt = 0.01;
 

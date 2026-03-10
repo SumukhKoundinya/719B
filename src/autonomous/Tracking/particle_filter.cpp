@@ -75,7 +75,6 @@ double ParticleFilter::raycastToWall(double x, double y, double angle) {
 void ParticleFilter::measurement(double frontReading, double backReading,
                                   double leftReading,  double rightReading) {
     for (auto &p : particles) {
-        // Kill off-field particles immediately
         if (p.x < 0 || p.x > 144 || p.y < 0 || p.y > 144) {
             p.weight = 0;
             continue;
