@@ -259,12 +259,39 @@ void Autonomous::test() {
     drivePID.moveDistance(24, 1);
 }
 
-void Autonomous::timeCellMoonPalace() {
+void Autonomous::timeCellMoonPalace() { // ADIT EDIT THIS
+    //drivePID.moveDistance(12, 0.9);pkjio0---------------------
+    //drivePID.moveDistance(8, 0.9); 
+    moveIntake(127);
+    drivePID.moveDistance(15, 1);
+    rotPID.rotateTo(14);
+    drivePID.moveDistance(19, 0.72);
+    pros::delay(500);
+    rotPID.rotateTo(105);
+    moveIntake(0);
+    drivePID.moveDistance(20.5, 0.87);
+    rotPID.rotateTo(53);
+    drivePID.moveDistance(-9, 1);
+    pistonB.set_value(0);
+    moveIntake(-127);
+    pros::delay(150);
+    moveIntake(127);
 
+    /*pros::delay(2500);
+    descore.set_value(1);
+    drivePID.moveDistance(14, 1);
+    rotPID.rotateTo(135);
+    drivePID.moveDistance(25, 1);
+    descore.set_value(0);*/
+}
+
+void moveMotorsTogether(int speed) {
+    left_mg.moveMotors(speed);
+    right_mg.moveMotors(speed);
 }
 
 void Autonomous::selfEmbodimentOfPerfection() {
-    descore.set_value(1);
+    /*descore.set_value(1);
     //drivePID.moveDistance(12, 0.9);
     //drivePID.moveDistance(8, 0.9); 
     moveIntake(127);
@@ -282,8 +309,15 @@ void Autonomous::selfEmbodimentOfPerfection() {
     moveIntake(127);
     pros::delay(1500);
     pistonB.set_value(1);
-    drivePID.moveDistance(25, 1);
-}
+    drivePID.moveDistance(25, 1);*/
+    pistonB.set_value(0);
+    moveIntake(127);
+    moveMotorsTogether(-127);
+    pros::delay(250);
+    moveMotorsTogether(127);
+    pros::delay(2500);
+    moveMotorsTogether(0);
+}   
 
 void Autonomous::testGamble() {
     imu.tare_rotation();
@@ -334,16 +368,20 @@ void Autonomous::rightSideAutonControl() {
     pros::delay(500);
     rotPID.rotateTo(105);
     moveIntake(0);
-    drivePID.moveDistance(21.5, 0.87);
-    rotPID.rotateTo(51.5);
-    matchLoader2.set_value(1);
-    drivePID.moveDistance(-6.5, 1);
+    drivePID.moveDistance(20.5, 0.87);
+    rotPID.rotateTo(53);
+    drivePID.moveDistance(-9, 1);
     pistonB.set_value(0);
     moveIntake(-127);
-    pros::delay(300);
+    pros::delay(150);
     moveIntake(127);
 
+    pros::delay(2500);
+    descore.set_value(1);
+    drivePID.moveDistance(14, 1);
+    rotPID.rotateTo(135);
+    drivePID.moveDistance(25, 1);
+    descore.set_value(0);
 
-    
 }
 
