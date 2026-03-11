@@ -97,16 +97,16 @@
 #define tcksPerRev 360.0
 #define distancePerTicksOdom ((M_PI * odomPodWheelDiam) / ticksPerRev)
 
-#define kPL 1.7
+#define kPL 2.0
 #define kIL 0
-#define kDL 1
+#define kDL 1.2
 
 #define kPR 5.0
 #define kIR 0.5
 #define kDR 0.5
 #define toleranceR 3.0
 
-#define kPT 1.0
+#define kPT 4.0
 #define kIT 0
 #define kDT 0.5
 

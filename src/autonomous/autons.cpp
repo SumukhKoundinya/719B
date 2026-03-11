@@ -254,6 +254,9 @@ void Autonomous::purePursuitTest() {
     rotPID.rotateTo(90);
     drivePID.moveDistance(12, 1);*/
     // smartAuton();
+    drivePID.moveDistance(24, 1);
+    rotPID.rotateTo(20);
+    drivePID.moveDistance(12, 1.25);
 }
 
 void Autonomous::test() {
