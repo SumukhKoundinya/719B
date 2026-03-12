@@ -14,7 +14,7 @@ void autonomous() {
     //auton.rightSideAutonControl();
     //auton.rightSideAutonControl();
     //auton.test();
-    auton.test();
+    auton.AditdaGoat();
 }
 
 void opcontrol() {

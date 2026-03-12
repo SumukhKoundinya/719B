@@ -15,4 +15,5 @@ public:
     void initFunc();
     void rightSideAutonControl();
     void leftSideAutonControl();
+    void AditdaGoat();
 };

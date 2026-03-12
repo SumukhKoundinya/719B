@@ -1,3 +1,5 @@
+#include "autons.hpp"
+#include "functions.hpp"
 #include "main.h"
 
 Odometry odom;
@@ -403,3 +405,34 @@ void Autonomous::rightSideAutonControl() {
 
 }
 
+void Autonomous::AditdaGoat() {
+
+   moveIntake(127);
+   drivePID.moveDistance(12, standardAmplification);
+   rotPID.rotateTo(45);
+   drivePID.moveDistance(8, standardAmplification);
+   rotPID.rotateTo(-45);
+   drivePID.moveDistance(15, standardAmplification);
+   pros::delay(1000);
+   moveIntake(0);
+   rotPID.rotateTo(125);
+   drivePID.moveDistance(21, standardAmplification);
+   rotPID.rotateTo(35);
+   drivePID.moveDistance(-14,standardAmplification);
+   pistonB.set_value(0);
+   moveIntake(127);
+   pros::delay(5000);
+   drivePID.moveDistance(2, standardAmplification);
+   drivePID.moveDistance(-4, standardAmplification);
+   rotPID.rotateTo(5);
+   matchLoader2.set_value(1);
+   pistonB.set_value(1);
+   drivePID.moveDistance(24, 0.75);
+   moveIntake(127);
+   pros::delay(2500);
+   moveIntake(0);
+   drivePID.moveDistance(-24, standardAmplification);
+   pistonB.set_value(0);
+   moveIntake(127);
+
+}
