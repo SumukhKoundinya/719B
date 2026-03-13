@@ -15,4 +15,6 @@ public:
     void initFunc();
     void rightSideAutonControl();
     void leftSideAutonControl();
+    void rightSideLongMax();
+    void leftSideLongMax();
 };

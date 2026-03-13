@@ -12,9 +12,9 @@ void competition_initialize() {}
 
 void autonomous() {
     //auton.rightSideAutonControl();
-    //auton.rightSideAutonControl();
+    auton.rightSideAutonControl();
     //auton.test();
-    auton.test();
+    //auton.purePursuitTest();
 }
 
 void opcontrol() {

@@ -1,7 +1,9 @@
 #include "main.h"
 
+double kF = 3.0;
+
 Odometry odom;
-LinearPID drivePID(kPL, kIL, kDL, odomPodWheelDiam, tcksPerRev);
+LinearPID drivePID(kPL, kIL, kDL, odomPodWheelDiam, tcksPerRev, kF);
 RotationalPID rotPID(kPR, kIR, kDR, toleranceR, -127, 127);
 ParticleFilter pf(100);
 
@@ -254,9 +256,7 @@ void Autonomous::purePursuitTest() {
     rotPID.rotateTo(90);
     drivePID.moveDistance(12, 1);*/
     // smartAuton();
-    drivePID.moveDistance(24, 1);
-    rotPID.rotateTo(20);
-    drivePID.moveDistance(12, 1.25);
+    drivePID.moveDistanceProfiled(24, 30.0, 15.0, 1.0);
 }
 
 void Autonomous::test() {
@@ -373,13 +373,39 @@ void Autonomous::testGamble() {
 }
 
 void Autonomous::leftSideAutonControl() {
-    
+    moveIntake(127);
+    drivePID.moveDistance(29.5, 0.85);
+    rotPID.rotateTo(-105);
+    moveIntake(0);
+    drivePID.moveDistance(-15.5, 1);
+
+    pistonA.set_value(1);
+
+    moveIntake(127);
+    pros::delay(2500);
+    moveIntake(0);
+    pistonA.set_value(0);
+    pistonB.set_value(0);
+
+    rotPID.rotateTo(-5);
+    drivePID.moveDistance(35, 1);
+    pros::delay(200);
+    rotPID.rotateTo(-45);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(12, 1.25);
+
+    moveIntake(127);
+    /*pros::delay(800);
+    moveIntake(0);
+    drivePID.moveDistance(-26, 1);
+    pistonB.set_value(0);
+    moveIntake(127);*/
 }
 
 void Autonomous::rightSideAutonControl() {
     //drivePID.moveDistance(12, 0.9);
     //drivePID.moveDistance(8, 0.9); 
-    moveIntake(127);
+    /*moveIntake(127);
     drivePID.moveDistance(15, 1);
     rotPID.rotateTo(14);
     drivePID.moveDistance(19, 0.72);
@@ -399,7 +425,69 @@ void Autonomous::rightSideAutonControl() {
     drivePID.moveDistance(14, 1);
     rotPID.rotateTo(135);
     drivePID.moveDistance(25, 1);
-    descore.set_value(0);
+    descore.set_value(0);*/
+    /*moveIntake(127);
+    drivePID.moveDistance(15, standardAmplification);
+    rotPID.rotateTo(14);
+    drivePID.moveDistance(15, standardAmplification);
+    pros::delay(800);
+    rotPID.rotateTo(-57);
+    drivePID.moveDistance(13.5, standardAmplification);
+    rotPID.rotateTo(-8);
+    moveIntake(-127);
+    pros::delay(1200);
+    moveIntake(0);
+    drivePID.moveDistance(-39, 1);
+    rotPID.rotateTo(-132);
+    drivePID.moveDistance(-20, 1);*/
+    moveIntake(127);
+    drivePID.moveDistance(26, 0.85);
+    rotPID.rotateTo(-60);
+    moveIntake(0);
+    drivePID.moveDistance(15, 1);
+    moveIntake(-127);
+    pros::delay(800);
+    moveIntake(0);
+    rotPID.rotateTo(-15);
+    drivePID.moveDistance(-35, 1);
+    pros::delay(100);
+    rotPID.rotateTo(-120);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(12, 1.25);
 
+    moveIntake(127);
+    pros::delay(800);
+    moveIntake(0);
+    drivePID.moveDistance(-26, 1);
+    pistonB.set_value(0);
+    moveIntake(127);
 }
 
+void Autonomous::rightSideLongMax() {
+    moveIntake(127);
+    drivePID.moveDistance(26, 0.85);
+    rotPID.rotateTo(95);
+    moveIntake(0);
+    drivePID.moveDistance(26, 1);
+    pros::delay(100);
+    rotPID.rotateTo(44);
+
+    moveIntake(-100);
+    pros::delay(100);
+    moveIntake(0);
+    pistonB.set_value(0);
+
+    drivePID.moveDistance(-20, 1);
+
+    moveIntake(127);
+    pros::delay(3000);
+    moveIntake(0);
+
+    pistonB.set_value(1);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(20, 1.25);
+}
+
+void Autonomous::leftSideLongMax() {
+
+}
