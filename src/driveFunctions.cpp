@@ -29,8 +29,6 @@ void arcadeControl() {
         left_mg.moveMotors(dir - turn);
         right_mg.moveMotors(dir + turn);
 
-        master.print(0, 1, "Left Heat: %d, Right Heat: %d", left_mg.getMotorTemp(), right_mg.getMotorTemp());
-
         mainOpControl();
         toggleDescore();
         pros::delay(20);
@@ -55,8 +53,6 @@ void arcadeTipControl() {
 
         left_mg.moveMotors(leftSpeed);
         right_mg.moveMotors(rightSpeed);
-
-        master.print(0, 1, "Left Heat: %d, Right Heat: %d", left_mg.getMotorTemp(), right_mg.getMotorTemp());
 
         mainOpControl();
         toggleDescore();

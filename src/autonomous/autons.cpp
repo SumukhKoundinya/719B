@@ -107,8 +107,8 @@ static void bezierPoint(double p0x, double p0y,
 }
 
 void moveToPointCurve(double targetX, double targetY, double maxSpeed = 100.0) {
-    double startX = pf.getY();
-    double startY = pf.getX();
+    double startX = 0; // change back to pf.getX()
+    double startY = 0; // change back to pf.getY()
 
     double headingRad = imu.get_rotation() * M_PI / 180.0;
 
@@ -124,7 +124,7 @@ void moveToPointCurve(double targetX, double targetY, double maxSpeed = 100.0) {
     double cp2x = targetX - tension * sin(angleToTarget);
     double cp2y = targetY - tension * cos(angleToTarget);
 
-    const int NUM_POINTS = 50;  // increased from 20
+    const int NUM_POINTS = 50;
     std::vector<PathPoint> curvePath;
 
     for (int i = 0; i <= NUM_POINTS; i++) {
@@ -137,11 +137,11 @@ void moveToPointCurve(double targetX, double targetY, double maxSpeed = 100.0) {
         curvePath.push_back({px, py, speed, 0.0, isLast});
     }
 
-    PurePursuit pp(curvePath, 20.0, 13.75);  // increased lookahead from 6 to 10
+    PurePursuit pp(curvePath, 20.0, 13.75);
     while (!pp.isFinished()) {
         Pose currentPose = {
-            pf.getY(),
             pf.getX(),
+            pf.getY(),
             imu.get_rotation() * M_PI / 180.0
         };
         pp.step(currentPose);
@@ -258,7 +258,7 @@ void Autonomous::purePursuitTest() {
     rotPID.rotateTo(90);
     drivePID.moveDistance(12, 1);*/
     // smartAuton();
-    drivePID.moveDistanceProfiled(24, 30.0, 15.0, 1.0);
+    moveToPointCurve(15, 24);
 }
 
 void Autonomous::test() {
@@ -311,32 +311,64 @@ void moveMotorsTogether(int speed) {
 }
 
 void Autonomous::selfEmbodimentOfPerfection() {
-    /*descore.set_value(1);
-    //drivePID.moveDistance(12, 0.9);
-    //drivePID.moveDistance(8, 0.9); 
+
+    drivePID.moveDistance(15, 1.25);
+    rotPID.rotateTo(45);
+    drivePID.moveDistance(8, 1.25);
+    rotPID.rotateTo(-45);
+
     moveIntake(127);
-    drivePID.moveDistance(15, 1);
-    rotPID.rotateTo(15);
-    drivePID.moveDistance(19, 0.8);
-    pros::delay(500);
-    rotPID.rotateTo(105);
+    drivePID.moveDistance(22, 0.85);
+    rotPID.rotateTo(110);
     moveIntake(0);
-    drivePID.moveDistance(23, 1);
-    rotPID.rotateTo(52.5);
+
+    drivePID.moveDistance(24, 1);
+    pros::delay(150);
+    rotPID.rotateTo(50);
+    pistonB.set_value(0);
+    drivePID.moveDistance(-20, 1);
+    moveIntake(127);
+    drivePID.moveDistance(3, 0.8);
+    pros::delay(4000);
+    moveIntake(0);
+    pistonB.set_value(1); 
     matchLoader2.set_value(1);
-    drivePID.moveDistance(-6, 1);
-    pistonB.set_value(0);
+    drivePID.moveDistance(22, 1.1);
     moveIntake(127);
-    pros::delay(1500);
+    pros::delay(4000);
+
+    moveIntake(0);
+    drivePID.moveDistance(-22, 1.25);
+    pistonB.set_value(0);
+    matchLoader2.set_value(0);
+    moveIntake(127);
+    drivePID.moveDistance(3, 1);
+    pros::delay(4000);
+    moveIntake(0);
     pistonB.set_value(1);
-    drivePID.moveDistance(25, 1);*/
-    pistonB.set_value(0);
+
+    drivePID.moveDistance(10, 1.25);
+    rotPID.rotateTo(90);
+    drivePID.moveDistance(60, 0.85);
+    pros::delay(150);
+    rotPID.rotateTo(88);
+
     moveIntake(127);
-    moveMotorsTogether(-127);
-    pros::delay(250);
-    moveMotorsTogether(127);
-    pros::delay(2500);
-    moveMotorsTogether(0);
+    drivePID.moveDistance(12, 1);
+    rotPID.rotateTo(-130);
+    moveIntake(0);
+
+    drivePID.moveDistance(20, 1.25);
+    pros::delay(150);
+    rotPID.rotateTo(-50);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(15, 1);
+    moveIntake(127);
+    pros::delay(4000);
+    moveIntake(0);
+
+
+
 }   
 
 void Autonomous::testGamble() {
@@ -465,7 +497,6 @@ void Autonomous::rightSideAutonControl() {
     moveIntake(127);
 }
 
-<<<<<<< HEAD
 void Autonomous::rightSideLongMax() {
     moveIntake(127);
     drivePID.moveDistance(26, 0.85);
@@ -494,7 +525,7 @@ void Autonomous::rightSideLongMax() {
 void Autonomous::leftSideLongMax() {
 
 }
-=======
+
 void Autonomous::AditdaGoat() {
 
    moveIntake(127);
@@ -526,4 +557,3 @@ void Autonomous::AditdaGoat() {
    moveIntake(127);
 
 }
->>>>>>> e7d5a43924a3f0f2aaeb5298de8bf3a7706a012c

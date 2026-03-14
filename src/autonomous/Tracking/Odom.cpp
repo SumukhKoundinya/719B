@@ -63,10 +63,10 @@ void Odometry::update() {
 
 void Odometry::resetDistance() {
     const double frontOffset = 7.0;
-    const double backOffset  = 7.0;
-    const double leftOffset  = 7.0;
+    const double backOffset = 7.0;
+    const double leftOffset = 7.0;
     const double rightOffset = 7.0;
-    const double fieldSize   = 144.0;
+    const double fieldSize = 144.0;
 
     double cosT = cos(theta);
     double sinT = sin(theta);
