@@ -324,11 +324,11 @@ void Autonomous::selfEmbodimentOfPerfection() {
 
     drivePID.moveDistance(24, 1);
     pros::delay(150);
-    rotPID.rotateTo(50);
+    rotPID.rotateTo(60);
     pistonB.set_value(0);
-    drivePID.moveDistance(-20, 1);
+    drivePID.moveDistance(-20, 0.9);
     moveIntake(127);
-    drivePID.moveDistance(3, 0.8);
+    drivePID.moveDistance(3, 1);
     pros::delay(4000);
     moveIntake(0);
     pistonB.set_value(1); 
@@ -355,19 +355,30 @@ void Autonomous::selfEmbodimentOfPerfection() {
 
     moveIntake(127);
     drivePID.moveDistance(12, 1);
-    rotPID.rotateTo(-130);
+    rotPID.rotateTo(-115);
     moveIntake(0);
 
     drivePID.moveDistance(20, 1.25);
     pros::delay(150);
-    rotPID.rotateTo(-50);
-    matchLoader2.set_value(1);
-    drivePID.moveDistance(15, 1);
+    rotPID.rotateTo(-60);
+
+    drivePID.moveDistance(-15, 1.25);
+    pistonB.set_value(0);
     moveIntake(127);
     pros::delay(4000);
     moveIntake(0);
 
+    pistonB.set_value(1);
+    matchLoader2.set_value(1);
+    drivePID.moveDistance(20, 1.25);
+    moveIntake(127);
+    pros::delay(4000);
+    moveIntake(0);
 
+    drivePID.moveDistance(-20, 1);
+    pistonB.set_value(0);
+    matchLoader2.set_value(0);
+    moveIntake(127);
 
 }   
 
